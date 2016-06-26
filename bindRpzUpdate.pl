@@ -10,6 +10,7 @@ die "Must run as root\n" unless $> == 0;
 use constant ZONE => 'rpz.bikeshed.internal';
 use constant RPZ => "/var/lib/bind/db.".ZONE; # BIND response policy zone (RPZ)
 use constant TMP => '/tmp/rpz.tmp';
+use constant CNAME => 'brox.bikeshed.internal.';
 
 open my $in,  '<', RPZ or die "Can't read file: $!";
 open my $out, '>', TMP or die "Can't write new file: $!";
@@ -40,7 +41,7 @@ foreach my $dn (split /,/, $main::dns) {
   foreach (@in_rpz) {
     next DN if ($_ =~ m/^$dn/);
   }
-  printf $out "%-46sCNAME   .\n", $dn;
+  printf $out "%-46sCNAME   %s\n", $dn, CNAME;
   $main::rpzUpdated = 1;
 }
 
